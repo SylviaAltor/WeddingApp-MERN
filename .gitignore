@@ -1,0 +1,29 @@
+# Global
+.DS_Store
+*.log
+logs/
+.idea/
+.vscode/
+*.env
+*.key
+*.cert
+*.pem
+
+# lovemapped-react
+lovemapped-react/node_modules/
+lovemapped-react/dist/
+lovemapped-react/build/
+lovemapped-react/.env.local
+lovemapped-react/.env.*.local
+lovemapped-react/coverage/
+
+# lovemapped-server
+lovemapped-server/node_modules/
+lovemapped-server/.env
+lovemapped-server/coverage/
+lovemapped-server/test-results/
+
+# 系统文件
+Thumbs.db
+ehthumbs.db
+Desktop.ini
