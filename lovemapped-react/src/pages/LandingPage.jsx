@@ -248,7 +248,7 @@ const LandingPage = () => {
                     <button
                       className="btn btn-dark border-dark fw-bold bg-dark shadow p-3 rounded"
                       style={{ fontSize: "16px", width: "100%" }}
-                      onClick={handleSubmitGuest} //for now
+                      onClick={handleSubmitGuest}
                     >
                       Submit
                     </button>
