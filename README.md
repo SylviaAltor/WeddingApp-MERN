@@ -53,8 +53,8 @@ In current project, I am developing the certain subdomain.
   - Admin login via password
   - JWT-based session authentication
   - Subdomain routing and landing page UI
-- 🔄 **Epic 2**: Admin Dashboard (in progress)  
-- 🔜 Epic 3: Guest RSVP & Preferences  
+- 🔄 **Epic 2**: Guest RSVP & Preferences (in progress)  
+- 🔜 Epic 3: Admin Dashboard & Guest Management  
 - 🔜 Epic 4: Photo Wall  
 
 Currently, development is focused on a specific couple's subdomain (e.g., /Sylvia&Voke).
