@@ -23,12 +23,15 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+      working-directory: lovemapped-react
 
     - name: Run tests
       run: npm test
+      working-directory: lovemapped-react
 
     - name: Build project
       run: npm run build
+      working-directory: lovemapped-react
 
 
 
@@ -50,7 +53,7 @@ jobs:
 
   #   - name: Build Docker Image
   #     run: |
-  #       docker build -t lovemapped-frontend .
+  #       docker build -t lovemapped-frontend ./lovemapped-react
 
   #   - name: Run Docker Locally
   #     run: |
