@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    environment {
+        BACKEND_DIR = 'lovemapped-server'
+        IMAGE_NAME = 'lovemapped-backend'
+        CONTAINER_NAME = 'backend-container'
+        PORT = '5000'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/SylviaAltor/WeddingApp-MERN.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir("${BACKEND_DIR}") {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir("${BACKEND_DIR}") {
+                    sh 'npm test'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                // build from project root, specify Dockerfile location with -f
+                sh "docker build -t ${IMAGE_NAME} -f ${BACKEND_DIR}/Dockerfile ${BACKEND_DIR}"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh "echo CONTAINER_NAME=${CONTAINER_NAME}"
+                sh "echo IMAGE_NAME=${IMAGE_NAME}"
+
+                // stop and remove old container if exists
+                sh "docker rm -f ${CONTAINER_NAME} || true"
+                // run container with name and port mapping
+                sh "docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+                // list container to verify
+                sh "docker ps --filter name=${CONTAINER_NAME}"
+            }
+        }
+    }
+}
