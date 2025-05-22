@@ -41,7 +41,7 @@ In current project, I am developing the certain subdomain.
 - Nodemailer for emails *(planned)*
 
 **CI/CD**  
-- Frontend: GitHub Actions → Vercel  
+- Frontend: GitHub Actions → Vercel *(planned)*
 - Backend: Jenkins → Docker Hub → Render/Fly.io *(planned)*
 
 ---
