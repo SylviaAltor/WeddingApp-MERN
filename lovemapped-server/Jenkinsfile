@@ -6,6 +6,7 @@ pipeline {
         IMAGE_NAME = 'lovemapped-backend'
         CONTAINER_NAME = 'backend-container'
         PORT = '5000'
+        JWT_SECRET = credentials('jwt-secret-id')
     }
 
     stages {

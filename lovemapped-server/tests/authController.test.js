@@ -20,7 +20,7 @@ describe("AuthController - Admin Login", () => {
     });
 
     const res = await request(app)
-      .post("/api/auth/admin/login")
+      .post("/api/admin/login")
       .send({ password: "correctpassword" });
 
     expect(res.status).toBe(200);
@@ -37,7 +37,7 @@ describe("AuthController - Admin Login", () => {
     });
 
     const res = await request(app)
-      .post("/api/auth/admin/login")
+      .post("/api/admin/login")
       .send({ password: "wrongpassword" });
 
     expect(res.status).toBe(401);
@@ -48,7 +48,7 @@ describe("AuthController - Admin Login", () => {
     Couple.findOne = jest.fn().mockResolvedValue(null);
 
     const res = await request(app)
-      .post("/api/auth/admin/login")
+      .post("/api/admin/login")
       .send({ password: "anypassword" });
 
     expect(res.status).toBe(401);
@@ -59,7 +59,7 @@ describe("AuthController - Admin Login", () => {
     Couple.findOne = jest.fn().mockRejectedValue(new Error("Database error"));
 
     const res = await request(app)
-      .post("/api/auth/admin/login")
+      .post("/api/admin/login")
       .send({ password: "correctpassword" });
 
     expect(res.status).toBe(500);
