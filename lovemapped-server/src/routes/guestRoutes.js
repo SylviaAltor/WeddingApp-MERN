@@ -8,7 +8,6 @@ const router = express.Router();
 // Guest login route
 router.post('/login', loginGuest);
 
-
 // Guest Dashboard, only for role: "guest"
 router.get("/dashboard", verifyToken, (req, res) => {
   if (req.user.role !== "guest") {

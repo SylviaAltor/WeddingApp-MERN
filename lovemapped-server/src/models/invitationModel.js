@@ -13,6 +13,7 @@
  */
 
 import mongoose from "mongoose";
+import Guest from "./guestModel.js";
 
 // Helper function to generate a 6-character invitation code
 function generateInviteCode(length = 6) {
@@ -60,6 +61,20 @@ InvitationSchema.pre("save", async function (next) {
     this.guestIndex = lastInvite ? lastInvite.guestIndex + 1 : 1;
   }
   next();
+});
+
+// Post-save hook to create a corresponding guest document
+InvitationSchema.post("save", async function (doc, next) {
+  try {
+    const existingGuest = await Guest.findOne({ guestIndex: doc.guestIndex });
+    if (!existingGuest) {
+      await Guest.create({ guestIndex: doc.guestIndex });
+    }
+    next();
+  } catch (err) {
+    console.error("Error creating guest entry:", err);
+    next(err); // pass error forward
+  }
 });
 
 export default mongoose.model("Invitation", InvitationSchema);

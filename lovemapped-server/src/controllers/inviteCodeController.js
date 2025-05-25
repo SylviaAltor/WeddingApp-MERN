@@ -1,50 +1,30 @@
-/**
- * Invite Code Controller
- *
- * This controller handles the creation and retrieval of invitation codes.
- * It interacts with the Invitation model and provides API endpoints
- * for generating and managing invitation codes.
- */
-
-import Invitation from "../models/invitationModel.js";
+import {createInvitationService, getInvitationByCodeService, getAllInvitationsService, updateInvitationService, deleteInvitationService,
+} from "../services/inviteCodeService.js";
 
 /**
- * Create a new invitation with a unique six-character invite code
- *
+ * Create a new invitation
  */
 export const createInvitation = async (req, res) => {
   try {
     const { guestName, guestEmail } = req.body;
 
-    // Validate input
     if (!guestName || !guestEmail) {
-      return res
-        .status(400)
-        .json({ message: "Guest name and email are required." });
+      return res.status(400).json({ message: "Guest name and email are required." });
     }
 
-    // Create a new invitation entry
-    const newInvitation = new Invitation({
-      guestName,
-      guestEmail,
+    const newInvitation = await createInvitationService(guestName, guestEmail);
+
+    res.status(201).json({
+      message: "Guest created successfully",
+      invitation: newInvitation,
     });
-
-    await newInvitation.save();
-
-    res
-      .status(201)
-      .json({
-        message: "Guest created successfully",
-        invitation: newInvitation,
-      });
   } catch (error) {
     res.status(500).json({ message: "Error creating guest", error });
   }
 };
 
 /**
- * Retrieve an invitation by invite code
- *
+ * Get invitation by invite code
  */
 export const getInvitationByCode = async (req, res) => {
   try {
@@ -54,10 +34,7 @@ export const getInvitationByCode = async (req, res) => {
       return res.status(400).json({ message: "Invite code is required" });
     }
 
-    const upperCode = inviteCode.toUpperCase();
-
-    // Find invitation by its unique invite code
-    const invitation = await Invitation.findOne({ inviteCode: upperCode });
+    const invitation = await getInvitationByCodeService(inviteCode);
 
     if (!invitation) {
       return res.status(404).json({ message: "Guest not found." });
@@ -70,13 +47,11 @@ export const getInvitationByCode = async (req, res) => {
 };
 
 /**
- * Retrieve all invitations
- *
+ * Get all invitations
  */
 export const getAllInvitations = async (req, res) => {
   try {
-    const invitations = await Invitation.find();
-
+    const invitations = await getAllInvitationsService();
     res.json({ message: "Guest retrieved successfully", invitations });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving guest", error });
@@ -84,18 +59,14 @@ export const getAllInvitations = async (req, res) => {
 };
 
 /**
- * Update an invitation by invite code
+ * Update invitation by invite code
  */
 export const updateInvitation = async (req, res) => {
   try {
     const { inviteCode } = req.query;
     const updates = req.body;
 
-    const updatedInvitation = await Invitation.findOneAndUpdate(
-      { inviteCode },
-      { $set: updates }, // Only update provided fields
-      { new: true } // Return updated document
-    );
+    const updatedInvitation = await updateInvitationService(inviteCode, updates);
 
     if (!updatedInvitation) {
       return res.status(404).json({ message: "Guest not found." });
@@ -111,13 +82,13 @@ export const updateInvitation = async (req, res) => {
 };
 
 /**
- * Delete an invitation by invite code
+ * Delete invitation by invite code
  */
 export const deleteInvitation = async (req, res) => {
   try {
     const { inviteCode } = req.query;
 
-    const deletedInvitation = await Invitation.findOneAndDelete({ inviteCode });
+    const deletedInvitation = await deleteInvitationService(inviteCode);
 
     if (!deletedInvitation) {
       return res.status(404).json({ message: "Guest not found." });
