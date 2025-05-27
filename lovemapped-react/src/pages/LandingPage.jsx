@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "../styles/LandingPage.css";
 
 const LandingPage = () => {
   // State management
@@ -36,7 +37,6 @@ const LandingPage = () => {
     setTimeout(() => setShowButtons(true), 300);
   };
 
-
   // Admin authentication handler
   const handleSubmitAdmin = async () => {
     if (!adminCode.trim()) {
@@ -46,14 +46,15 @@ const LandingPage = () => {
 
     try {
       // Send login request to backend
-      const response = await axios.post("/api/admin/login", { password: adminCode });
+      const response = await axios.post("/api/admin/login", {
+        password: adminCode,
+      });
 
       // Store JWT token in localStorage
       localStorage.setItem("token", response.data.token);
 
       // Redirect to admin dashboard
       navigate("/admin/dashboard");
-
     } catch (error) {
       setError("Invalid admin code"); // Display error message on failure
     }
@@ -67,65 +68,43 @@ const LandingPage = () => {
     }
 
     try {
-
       const upperGuestCode = guestCode.trim().toUpperCase();
 
       // Send login request to backend
-      const response = await axios.post("/api/guest/login", { inviteCode: upperGuestCode });
+      const response = await axios.post("/api/guest/login", {
+        inviteCode: upperGuestCode,
+      });
 
-      // Store JWT token in localStorage
+      // Store JWT token and guestName in localStorage
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("guestName", response.data.guestName);
 
       // Redirect to admin dashboard
       navigate("/guest/welcome");
-
     } catch (error) {
       setError("Invalid invitation code"); // Display error message on failure
     }
   };
 
-
   return (
-    <div
-      className="d-flex h-100 text-center"
-      style={{ backgroundColor: "#f8f4e8", color: "#000", minHeight: "100vh" }}
-    >
-      {/* Mobile responsive styles */}
-      <style>{`
-        @media (max-width: 992px) {
-          .responsive-flex {
-            flex-direction: column !important;
-          }
-          .carousel-section {
-            max-width: 100% !important;
-            margin-bottom: 2rem;
-          }
-          .form-section {
-            width: 100% !important;
-            height: auto !important;
-          }
-        }
-      `}</style>
-
+    <div className="d-flex h-100 text-center landing-container">
       <div className="d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <main className="px-3 container-lg my-5">
+        <main className="px-3 container-lg my-4">
           {/* Welcome message section */}
-          <h3>Welcome to Sylvia & Voke's Wedding!</h3>
-          <p className="lead fs-6">
+          <h3 className="wedding-heading">
+            Welcome to Sylvia & Voke's Wedding!
+          </h3>
+          <p className="lead fs-5 wedding-p">
             Welcome to our wedding! Finally, we made it!
             <br />
-            Get ready for love, laughter, maybe a few happy tears…
-            <br />
-            and a party with free beer you won't forget!
+            Get ready for love, laughter, maybe a few happy tears... and a party
+            with free beer you won't forget!
           </p>
 
           {/* Main content container */}
-          <div
-            className="d-flex justify-content-between responsive-flex"
-            style={{ gap: "2rem", alignItems: "center" }}
-          >
+          <div className="d-flex justify-content-between responsive-flex main-container">
             {/* Carousel section */}
-            <div className="carousel-section" style={{ flex: 1, maxWidth: "60%" }}>
+            <div className="carousel-section carousel-section">
               <div
                 id="carouselExample"
                 className="carousel slide"
@@ -136,32 +115,28 @@ const LandingPage = () => {
                   <div className="carousel-item active">
                     <img
                       src="/images/Slide1.png"
-                      className="d-block w-100"
-                      style={{ height: "500px", objectFit: "contain" }}
+                      className="d-block w-100 carousel-img"
                       alt="Slide 1"
                     />
                   </div>
                   <div className="carousel-item">
                     <img
                       src="/images/Slide2.png"
-                      className="d-block w-100"
-                      style={{ height: "500px", objectFit: "contain" }}
+                      className="d-block w-100 carousel-img"
                       alt="Slide 2"
                     />
                   </div>
                   <div className="carousel-item">
                     <img
                       src="/images/Slide3.jpg"
-                      className="d-block w-100"
-                      style={{ height: "500px", objectFit: "contain" }}
+                      className="d-block w-100 carousel-img"
                       alt="Slide 3"
                     />
                   </div>
                   <div className="carousel-item">
                     <img
                       src="/images/Slide4.png"
-                      className="d-block w-100"
-                      style={{ height: "500px", objectFit: "contain" }}
+                      className="d-block w-100 carousel-img"
                       alt="Slide 4"
                     />
                   </div>
@@ -193,30 +168,18 @@ const LandingPage = () => {
             </div>
 
             {/* Form/buttons section */}
-            <div
-              className="form-section"
-              style={{
-                flexBasis: "35%",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1.5rem",
-                justifyContent: "center",
-                height: "500px",
-              }}
-            >
+            <div className="form-section">
               {showButtons && (
                 <>
                   <button
                     onClick={handleGuestClick}
-                    className="btn btn-lg btn-dark fw-bold border-dark bg-dark shadow p-3 rounded"
-                    style={{ width: "100%", height: "120px" }}
+                    className="btn btn-lg guest-btn"
                   >
-                    Guests this way please
+                    Guest this way please
                   </button>
                   <button
                     onClick={handleAdminClick}
-                    className="btn btn-lg btn-light fw-bold border-white bg-white shadow p-3 rounded"
-                    style={{ width: "100%", height: "120px" }}
+                    className="btn btn-lg admin-btn"
                   >
                     This is our entrance
                   </button>
@@ -224,10 +187,7 @@ const LandingPage = () => {
               )}
 
               {showGuestForm && (
-                <div
-                  className="p-4 rounded shadow-sm transition-all"
-                  style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
-                >
+                <div className="form-container">
                   <input
                     type="text"
                     className="form-control mb-3"
@@ -241,22 +201,14 @@ const LandingPage = () => {
                   {error && showGuestForm && (
                     <div className="text-danger mb-2">{error}</div>
                   )}
-                  <div
-                    className="d-flex flex-column gap-3"
-                    style={{ marginTop: "1rem" }}
-                  >
+                  <div className="form-button-group">
                     <button
-                      className="btn btn-dark border-dark fw-bold bg-dark shadow p-3 rounded"
-                      style={{ fontSize: "16px", width: "100%" }}
+                      className="btn submit-btn"
                       onClick={handleSubmitGuest}
                     >
                       Submit
                     </button>
-                    <button
-                      className="btn btn-light fw-bold border-white bg-white shadow p-3 rounded"
-                      style={{ fontSize: "16px", width: "100%" }}
-                      onClick={handleBack}
-                    >
+                    <button className="btn back-btn" onClick={handleBack}>
                       Back
                     </button>
                   </div>
@@ -264,10 +216,7 @@ const LandingPage = () => {
               )}
 
               {showAdminForm && (
-                <div
-                  className="p-4 rounded shadow-sm transition-all"
-                  style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
-                >
+                <div className="form-container">
                   <input
                     type="password"
                     className="form-control mb-3"
@@ -281,22 +230,14 @@ const LandingPage = () => {
                   {error && showAdminForm && (
                     <div className="text-danger mb-2">{error}</div>
                   )}
-                  <div
-                    className="d-flex flex-column gap-3"
-                    style={{ marginTop: "1rem" }}
-                  >
+                  <div className="form-button-group">
                     <button
-                      className="btn btn-dark border-dark fw-bold bg-dark shadow p-3 rounded"
-                      style={{ fontSize: "16px", width: "100%" }}
+                      className="btn submit-btn"
                       onClick={handleSubmitAdmin}
                     >
                       Submit
                     </button>
-                    <button
-                      className="btn btn-light fw-bold border-white bg-white shadow p-3 rounded"
-                      style={{ fontSize: "16px", width: "100%" }}
-                      onClick={handleBack}
-                    >
+                    <button className="btn back-btn" onClick={handleBack}>
                       Back
                     </button>
                   </div>

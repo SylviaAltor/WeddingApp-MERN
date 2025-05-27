@@ -27,6 +27,7 @@ export const loginGuest = async (req, res) => {
         res.json({
             message: "Guest login successful",
             token,
+            guestName: guest.guestName
         });
 
     } catch (error) {

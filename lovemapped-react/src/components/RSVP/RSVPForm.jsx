@@ -1,57 +1,132 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
-const RSVPForm = () => {
-  const [name, setName] = useState(''); // State for storing the name input
-  const [attending, setAttending] = useState(false); // State for storing the attendance status
+export default function RSVPForm({ guest }) {
+  const [editingField, setEditingField] = useState(null);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    
-    // Construct the data to be sent to the backend
-    const rsvpData = {
-      name: name,
-      attending: attending,
-    };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      rsvpStatus: guest?.rsvpStatus || "Pending",
+      plusOne: guest?.plusOne || false,
+      appetizerChoice: guest?.appetizerChoice || "",
+      entréeChoice: guest?.entréeChoice || "",
+      dietaryRestrictions: guest?.dietaryRestrictions || "",
+    },
+  });
 
-    // Send POST request to the backend
-    axios.post('/api/rsvp', rsvpData)
-      .then((response) => {
-        console.log('RSVP received:', response.data); // Log the response from the server
-      })
-      .catch((error) => {
-        console.error('Error submitting RSVP:', error); // Log any errors
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        guestIndex: guest.guestIndex,
+        ...data,
+      };
+
+      await fetch("/api/guest/rsvp/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(payload),
       });
+      setEditingField(null);
+    } catch (err) {
+      console.error("Update failed", err);
+    }
+  };
+
+  // Watch specific fields to show current values when not editing
+  const watchedFields = watch();
+
+  const renderField = (label, name, options = null) => {
+    const isEditing = editingField === name;
+
+    return (
+      <div style={{ marginBottom: "1em" }}>
+        <label style={{ fontWeight: "bold" }}>{label}:</label>{" "}
+        {isEditing ? (
+          <>
+            {options ? (
+              <select {...register(name)} defaultValue={watchedFields[name]}>
+                {options.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            ) : name === "plusOne" ? (
+              <input type="checkbox" {...register(name)} />
+            ) : (
+              <input {...register(name)} />
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                // submit current form data for this field only, or entire form
+                handleSubmit(onSubmit)();
+              }}
+              style={{
+                marginLeft: "1rem",
+                borderRadius: "20px",
+                padding: "0.3rem 1rem",
+              }}
+            >
+              Submit
+            </button>
+          </>
+        ) : (
+          <>
+            <span>
+              {name === "plusOne"
+                ? watchedFields[name]
+                  ? "Yes"
+                  : "No"
+                : options
+                ? watchedFields[name] || "Not Selected"
+                : watchedFields[name] || "NA"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setEditingField(name)}
+              style={{
+                marginLeft: "1rem",
+                borderRadius: "20px",
+                padding: "0.3rem 1rem",
+              }}
+            >
+              Edit
+            </button>
+          </>
+        )}
+      </div>
+    );
   };
 
   return (
-    <div>
-      <h2>RSVP Form</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)} // Update name state on input change
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Attending:
-          <input
-            type="checkbox"
-            checked={attending}
-            onChange={(e) => setAttending(e.target.checked)} // Update attendance status on checkbox change
-          />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <form>
+      {renderField("RSVP Status", "rsvpStatus", [
+        "Pending",
+        "Confirmed",
+        "Declined",
+      ])}
+      {renderField("Plus One", "plusOne")}
+      {renderField("Appetizer Choice", "appetizerChoice", [
+        "Salmon Canapés",
+        "Caesar Salad",
+        "Pumpkin Cream",
+      ])}
+      {renderField("Entrée Choice", "entréeChoice", [
+        "Roasted Rack of Lamb",
+        "Filet Mignon with Wild Mushroom",
+        "Eggplant Lasagna (Vegetarian)",
+      ])}
+      {renderField("Dietary Restrictions", "dietaryRestrictions")}
+    </form>
   );
-};
-
-export default RSVPForm;
+}

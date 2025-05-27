@@ -1,5 +1,5 @@
 /**
- * Middleware to protect admin routes
+ * Middleware to protect routes
  *
  * - Checks if a valid JWT token exists in the Authorization header.
  * - If valid, attaches admin ID to the request object (`req.adminId`).
@@ -33,6 +33,20 @@ export const verifyToken = (req, res, next) => {
     };
     next(); // Proceed to next middleware or route handler
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    console.error("JWT Verification Error:", error.message);
+
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "Token has expired. Please log in again." });
+    } else if (error.name === "JsonWebTokenError") {
+      return res
+        .status(401)
+        .json({ message: "Invalid token. Please provide a valid token." });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "Internal authentication error." });
+    }
   }
 };

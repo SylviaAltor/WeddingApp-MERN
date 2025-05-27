@@ -2,7 +2,7 @@ import {
   getGuestByIndexService,
   getAllGuestsService,
   updateGuestService,
-} from "../services/guestService";
+} from "../services/guestService.js";
 
 /**
  * Get guest information by guestIndex
@@ -58,6 +58,9 @@ export const updateGuest = async (req, res) => {
       guest: updatedGuest,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error updating guest rsvp", error });
+    console.error("Update failed:", error);
+    res
+      .status(500)
+      .json({ message: "Error updating guest rsvp", error: error.message });
   }
 };

@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Pages
 import LandingPage from '../pages/LandingPage';
 import AdminDashboard from '../pages/AdminDashboard';
-// import GuestRSVPPage from '../pages/GuestRSVPPage';
+import RSVPPage from '../pages/RSVPPage';
 import GuestWelcomePage from '../pages/GuestWelcomePage';
 // import PhotoWallPage from '../pages/PhotoWallPage';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -18,7 +18,7 @@ import PrivateRoute from '../components/auth/PrivateRoute';
 
 function AppRouter() {
   return (
-    <Router basename={window.location.pathname.split('/')[1] || ''}>
+    <Router>
       <Routes>
         {/* public route */}
         <Route path="/" element={<LandingPage />} />
@@ -33,6 +33,12 @@ function AppRouter() {
         <Route 
           path="/guest/welcome" 
           element={<PrivateRoute><GuestWelcomePage /></PrivateRoute>} 
+        />
+
+        {/* Protected RSVP Route */}
+        <Route 
+          path="/guest/rsvp" 
+          element={<PrivateRoute><RSVPPage /></PrivateRoute>} 
         />
 
         {/* Catch-all 404 Route */}
