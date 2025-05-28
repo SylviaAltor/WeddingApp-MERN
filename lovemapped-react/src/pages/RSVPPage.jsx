@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RSVPForm from "../components/RSVP/RSVPForm.jsx";
 import "../styles/RSVPPage.css";
+import 'animate.css';
 
 export default function RSVPPage() {
   const [guest, setGuest] = useState(null);
@@ -55,10 +56,7 @@ export default function RSVPPage() {
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
                 {/* need to be updated */}
-                <a
-                  className="nav-link text-white fw-bold"
-                  href="/guest/rsvp"
-                >
+                <a className="nav-link text-white fw-bold" href="/guest/rsvp">
                   My RSVP
                 </a>
               </li>
@@ -85,8 +83,10 @@ export default function RSVPPage() {
       </nav>
 
       {/* RSVP Form */}
-      <div className="container form-padding">
-        <RSVPForm guest={guest} />
+      <div className="pt-5 rsvp-card animate__animated animate__fadeInLeft">
+        <div className="container-fluid form-padding">
+          <RSVPForm guest={guest} />
+        </div>
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ describe("LandingPage Component", () => {
       screen.getByText(/Welcome to Sylvia & Voke's Wedding!/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Guests this way please/i })
+      screen.getByRole("button", { name: /Guest this way please/i })
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /This is our entrance/i })
@@ -30,7 +30,7 @@ describe("LandingPage Component", () => {
   test("Shows guest invitation code input after clicking guest button", async () => {
     renderWithRouter(<LandingPage />);
     const guestBtn = screen.getByRole("button", {
-      name: /Guests this way please/i,
+      name: /Guest this way please/i,
     });
     fireEvent.click(guestBtn);
 

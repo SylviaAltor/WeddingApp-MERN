@@ -13,10 +13,10 @@ export default function RSVPForm({ guest }) {
   } = useForm({
     defaultValues: {
       rsvpStatus: guest?.rsvpStatus || "Pending",
-      plusOne: guest?.plusOne || false,
-      appetizerChoice: guest?.appetizerChoice || "",
-      entréeChoice: guest?.entréeChoice || "",
-      dietaryRestrictions: guest?.dietaryRestrictions || "",
+      plusOne: guest?.plusOne || "No",
+      appetizerChoice: guest?.appetizerChoice || "Not Selected",
+      entréeChoice: guest?.entréeChoice || "Not Selected",
+      dietaryRestrictions: guest?.dietaryRestrictions || "NA",
     },
   });
 
@@ -27,13 +27,13 @@ export default function RSVPForm({ guest }) {
         ...data,
       };
 
-      await fetch("/api/guest/rsvp/update", {
+      await fetch(`/api/guest/rsvp/update?guestIndex=${guest.guestIndex}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(data),
       });
       setEditingField(null);
     } catch (err) {
@@ -41,7 +41,6 @@ export default function RSVPForm({ guest }) {
     }
   };
 
-  // Watch specific fields to show current values when not editing
   const watchedFields = watch();
 
   const renderField = (label, name, options = null) => {
@@ -60,17 +59,12 @@ export default function RSVPForm({ guest }) {
                   </option>
                 ))}
               </select>
-            ) : name === "plusOne" ? (
-              <input type="checkbox" {...register(name)} />
             ) : (
               <input {...register(name)} />
             )}
             <button
               type="button"
-              onClick={() => {
-                // submit current form data for this field only, or entire form
-                handleSubmit(onSubmit)();
-              }}
+              onClick={() => handleSubmit(onSubmit)()}
               style={{
                 marginLeft: "1rem",
                 borderRadius: "20px",
@@ -82,15 +76,7 @@ export default function RSVPForm({ guest }) {
           </>
         ) : (
           <>
-            <span>
-              {name === "plusOne"
-                ? watchedFields[name]
-                  ? "Yes"
-                  : "No"
-                : options
-                ? watchedFields[name] || "Not Selected"
-                : watchedFields[name] || "NA"}
-            </span>
+            <span>{watchedFields[name]}</span>
             <button
               type="button"
               onClick={() => setEditingField(name)}
@@ -115,7 +101,7 @@ export default function RSVPForm({ guest }) {
         "Confirmed",
         "Declined",
       ])}
-      {renderField("Plus One", "plusOne")}
+      {renderField("Plus One", "plusOne", ["Yes", "No"])}
       {renderField("Appetizer Choice", "appetizerChoice", [
         "Salmon Canapés",
         "Caesar Salad",

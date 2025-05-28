@@ -12,24 +12,28 @@ const guestSchema = new mongoose.Schema({
     default: "Pending",
   },
   plusOne: {
-    type: Boolean,
-    default: false,
+    type: String,
+    enum: ["Yes", "No"],
+    default: "No",
   },
   appetizerChoice: {
     type: String,
-    enum: ["Salmon Canapés", "Caesar Salad", "Pumpkin Cream"],
+    enum: ["Not Selected", "Salmon Canapés", "Caesar Salad", "Pumpkin Cream"],
+    default: "Not Selected",
   },
   entréeChoice: {
     type: String,
     enum: [
+      "Not Selected", 
       "Roasted Rack of Lamb",
       "Filet Mignon with Wild Mushroom",
       "Eggplant Lasagna (Vegetarian)",
     ],
+    default: "Not Selected",
   },
   dietaryRestrictions: {
     type: String,
-    default: "",
+    default: "NA",
     trim: true,
   },
   geoCoordinates: {
