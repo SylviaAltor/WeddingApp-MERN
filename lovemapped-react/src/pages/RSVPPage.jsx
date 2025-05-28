@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import RSVPForm from "../components/RSVP/RSVPForm.jsx";
+import GuestNavbar from "../layouts/GuestNavbar.jsx";
 import "../styles/RSVPPage.css";
-import 'animate.css';
+import "animate.css";
 
 export default function RSVPPage() {
   const [guest, setGuest] = useState(null);
   const [loading, setLoading] = useState(true);
-  const guestName = localStorage.getItem("guestName") || "Guest";
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const guestName = localStorage.getItem("guestName");
+    if (!guestName) {
+      navigate("/");
+      return;
+    }
+
     async function fetchGuest() {
       try {
         const res = await fetch("/api/guest/rsvp/current", {
@@ -35,53 +43,7 @@ export default function RSVPPage() {
 
   return (
     <div className="guest-welcome-container">
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg shadow-sm guest-navbar">
-        <div className="container-fluid">
-          <a className="navbar-brand fw-bold text-white" href="/">
-            Welcome, {guestName}!
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                {/* need to be updated */}
-                <a className="nav-link text-white fw-bold" href="/guest/rsvp">
-                  My RSVP
-                </a>
-              </li>
-              <li className="nav-item">
-                {/* need to be updated */}
-                <a
-                  className="nav-link text-white fw-bold"
-                  href="/guest/welcome"
-                >
-                  Photo Wall
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link text-white fw-bold"
-                  href="/guest/welcome"
-                >
-                  Home Page
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
+      <GuestNavbar />
       {/* RSVP Form */}
       <div className="pt-5 rsvp-card animate__animated animate__fadeInLeft">
         <div className="container-fluid form-padding">
