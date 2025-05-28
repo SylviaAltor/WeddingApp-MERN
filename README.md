@@ -2,7 +2,7 @@
 ![In Progress](https://img.shields.io/badge/status-In_Progress-yellow?style=flat-square)
 
 _Interactive Wedding Website for Couples and Guests_  
-**Status**: 🚧 In Progress — Currently implementing Epic 1 CI/CD 
+**Status**: 🚧 In Progress — Currently implementing Epic 3 
 
 ## 🧠 Overview
 
@@ -41,20 +41,23 @@ In current project, I am developing the certain subdomain.
 - Nodemailer for emails *(planned)*
 
 **CI/CD**  
-- Frontend: GitHub Actions → Vercel *(planned)*
-- Backend: Jenkins → Docker Hub → Render/Fly.io *(planned)*
+- Frontend: GitHub Actions *(completed)* → Vercel *(planned)*
+- Backend: Jenkins *(completed)* → Docker Hub *(planned)* → Render/Fly.io *(planned)*
 
 ---
 
 ## 🚧 Development Progress
 
-- ✅ **Epic 1**: Wedding Subsite Landing and Login Authentication (completed, currently on CI/CD)
-  - Guest login via invite code
-  - Admin login via password
-  - JWT-based session authentication
-  - Subdomain routing and landing page UI
-- 🔄 **Epic 2**: Guest RSVP & Preferences (in progress)  
-- 🔜 Epic 3: Admin Dashboard & Guest Management  
-- 🔜 Epic 4: Photo Wall  
+- ✅ **Epic 1**: Wedding Subsite Landing and Login Authentication (completed)
+  - Frontend: Subdomain routing and landing page UI built with React
+  - Authentication: Guest login via invite code & Admin login via password
+  - Security: JWT-based session authentication implemented using Express.js & MongoDB
+- ✅ **Epic 2**: Guest RSVP & Preferences (completed)
+  - Frontend: GuestWelcomePage post-login, styled with Bootstrap
+  - Forms & Data Handling: RSVP form built with React Hook Form, supporting CR**U**D operations
+  - Backend: RESTful API connecting frontend with MongoDB database
+- 🔄 **Epic 3**: Admin Dashboard & Guest Management (in progress)
+- 🔜 Epic 4: Guest Location & Interactive Map Integration
+- 🔜 Epic 5: Photo Wall 
 
 Currently, development is focused on a specific couple's subdomain (e.g., /Sylvia&Voke).
