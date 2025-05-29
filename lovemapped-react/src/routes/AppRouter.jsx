@@ -1,15 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Layouts
-// import MainLayout from '../layouts/MainLayout';
-// import AdminLayout from '../layouts/AdminLayout';
-
 // Pages
 import LandingPage from '../pages/LandingPage';
 import AdminDashboard from '../pages/AdminDashboard';
 import RSVPPage from '../pages/RSVPPage';
 import GuestWelcomePage from '../pages/GuestWelcomePage';
+import AdminManagePage from "../pages/AdminManagePage"
 // import PhotoWallPage from '../pages/PhotoWallPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
@@ -27,6 +24,12 @@ function AppRouter() {
         <Route 
           path="/admin/dashboard" 
           element={<PrivateRoute><AdminDashboard /></PrivateRoute>} 
+        />
+
+        {/* Protected Admin Route */}
+        <Route 
+          path="/admin/manage" 
+          element={<PrivateRoute><AdminManagePage /></PrivateRoute>} 
         />
 
         {/* Protected Guest Route */}
