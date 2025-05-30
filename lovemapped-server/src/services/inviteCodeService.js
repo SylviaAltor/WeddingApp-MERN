@@ -84,3 +84,23 @@ export const deleteInvitationService = async (inviteCode) => {
   }
 };
 
+// Retrieve all guest information from invitationModel and guestMode
+export const getAllGuestDetailsService = async () => {
+  try {
+    const invitations = await Invitation.find().lean();
+    const guests = await Guest.find().lean();
+
+    const combined = invitations.map(invite => {
+      const guestInfo = guests.find(g => g.guestIndex === invite.guestIndex) || {};
+      return {
+        ...invite,
+        ...guestInfo,
+      };
+    });
+
+    return combined;
+  } catch (err) {
+    console.error("Error fetching guest data from two models:", err);
+    throw err;
+  }
+};

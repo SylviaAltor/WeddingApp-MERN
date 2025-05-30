@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import AdminNavbar from "../layouts/AdminNavbar.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../styles/AdminManagePage.css";
+import AddGuestForm from "../components/guestManage/AddGuestForm.jsx";
+import GuestForm from "../components/guestManage/GuestForm.jsx";
 
 const AdminManagePage = () => {
   const [showButtons, setShowButtons] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showManageTable, setShowManageTable] = useState(false);
-  const [guestName, setGuestName] = useState("");
-  const [guestEmail, setGuestEmail] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [guestList, setGuestList] = useState([]);
   const [isSlidingOut, setIsSlidingOut] = useState(false);
+  const [selectedGuests, setSelectedGuests] = useState([]);
+  const [success, setSuccess] = useState(false);
 
   const handleAddGuestClick = () => {
     setIsSlidingOut(true);
@@ -34,38 +34,18 @@ const AdminManagePage = () => {
     }, 400);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!guestName.trim() || !guestEmail.trim()) {
-      setError("Guest name and email are required");
-      return;
-    }
-
-    try {
-      const response = await axios.post("/api/guest/create", {
-        guestName: guestName,
-        guestEmail: guestEmail,
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        setGuestName("");
-        setGuestEmail("");
-        setError("");
-        setSuccess(true);
-      } else {
-        setError("Submission failed with status: " + response.status);
-        setSuccess(false);
-      }
-    } catch (error) {
-      setError("Submission failed. Please try again.");
-    }
-  };
-
   const handleBack = () => {
     setShowAddForm(false);
     setShowManageTable(false);
     setTimeout(() => setShowButtons(true), 300);
+  };
+
+  const handleCheckboxChange = (guestIndex) => {
+    setSelectedGuests((prevSelected) =>
+      prevSelected.includes(guestIndex)
+        ? prevSelected.filter((id) => id !== guestIndex)
+        : [...prevSelected, guestIndex]
+    );
   };
 
   return (
@@ -91,77 +71,20 @@ const AdminManagePage = () => {
         )}
 
         {showAddForm && (
-          <div className="slide-in">
-            <h4 className="mt-4">Add New Guest</h4>
-            {/* Placeholder form */}
-            <form className="w-50 mx-auto">
-              <input
-                className="form-control mb-3"
-                placeholder="Guest Name"
-                value={guestName}
-                onChange={(e) => {
-                  setGuestName(e.target.value);
-                  setError("");
-                }}
-              />
-              <input
-                className="form-control mb-3"
-                placeholder="Email"
-                value={guestEmail}
-                onChange={(e) => {
-                  setGuestEmail(e.target.value);
-                  setError("");
-                }}
-              />
-              {error && showAddForm && (
-                <div className="text-danger mb-3">{error}</div>
-              )}
-              {!error && success && showAddForm && (
-                <div className="text-success mb-3">
-                  Guest added successfully!
-                </div>
-              )}
-              <div className="d-flex justify-content-between">
-                <button
-                  className="btn btn-success submit-btn me-3"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-                <button
-                  className="btn back-btn"
-                  onClick={handleBack}
-                  type="button"
-                >
-                  Back
-                </button>
-              </div>
-            </form>
-          </div>
+          <AddGuestForm
+            onBack={handleBack}
+            onGuestAdded={() => setSuccess(true)}
+          />
         )}
 
         {showManageTable && (
-          <div className="slide-in">
-            <h4 className="mt-4">Manage RSVPs</h4>
-            {/* Placeholder table */}
-            <div className="table-responsive mt-3">
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Guest Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>{/* Future rows go here */}</tbody>
-              </table>
-            </div>
-            <div className="text-center">
-              <button className="btn back-btn" onClick={handleBack}>
-                Back
-              </button>
-            </div>
-          </div>
+          <GuestForm
+            showManageTable={showManageTable}
+            guestList={guestList}
+            selectedGuests={selectedGuests}
+            handleCheckboxChange={handleCheckboxChange}
+            handleBack={handleBack}
+          />
         )}
       </div>
     </div>

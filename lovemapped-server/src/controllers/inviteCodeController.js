@@ -1,5 +1,4 @@
-import {createInvitationService, getInvitationByCodeService, getAllInvitationsService, updateInvitationService, deleteInvitationService,
-} from "../services/inviteCodeService.js";
+import {createInvitationService, getInvitationByCodeService, getAllInvitationsService, updateInvitationService, deleteInvitationService, getAllGuestDetailsService} from "../services/inviteCodeService.js";
 
 /**
  * Create a new invitation
@@ -97,5 +96,17 @@ export const deleteInvitation = async (req, res) => {
     res.json({ message: "Guest deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting guest", error });
+  }
+};
+
+/**
+ * Retrieve information from both Invitation and Guest
+ */
+export const getAllGuestDetails = async (req, res) => {
+  try {
+    const guests = await getAllGuestDetailsService();
+    res.status(200).json({ message: "Combined guest data retrieved successfully", guests });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching guest details", error });
   }
 };
