@@ -21,8 +21,8 @@ const AdminManagePage = () => {
     setTimeout(() => {
       setShowButtons(false);
       setShowAddForm(true);
-      setIsSlidingOut(false); // reset for future use
-    }, 400); // match animation duration
+      setIsSlidingOut(false); 
+    }, 400); 
   };
 
   const handleManageClick = () => {

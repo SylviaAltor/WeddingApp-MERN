@@ -42,3 +42,19 @@
 .manage-table-wrapper {
   font-size: 0.8rem;
 }
+
+@media print {
+  table {
+    width: 100% !important;
+    font-size: 10px !important;
+  }
+  th, td {
+    padding: 2px !important;
+    word-wrap: break-word;
+  }
+}
+
+table th {
+  vertical-align: middle;
+  text-align: center;
+}
