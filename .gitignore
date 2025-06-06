@@ -27,3 +27,6 @@ lovemapped-server/test-results/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Azure
+azuredeploy.json

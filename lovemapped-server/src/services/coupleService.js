@@ -3,20 +3,30 @@ import Couple from "../models/coupleModel.js";
 /**
  * Get the Couple record from the database
  * 
- * @returns {Promise<Object|null>} The Couple record (excluding password), or null if not found
  */
 export const getCoupleData = async () => {
-  return await Couple.findOne({}, "-password");
+  const cacheKey = "couple:data";
+
+  const cachedCouple = await redisClient.get(cacheKey);
+  if (cachedCouple) {
+    return JSON.parse(cachedCouple);
+  }
+
+  const couple = await Couple.findOne({}, "-password");
+
+  if (couple) {
+    await redisClient.setEx(cacheKey, 86400, JSON.stringify(couple));
+  }
+
+  return couple;
 };
+
 
 
 // ==================== For Test ====================
 /**
  * Insert a Couple record with encrypted password (if none exists)
  * 
- * @param {string} email - Admin email
- * @param {string} password - Admin password
- * @returns {Promise<Object>} Created Couple record
  */
 export const createCouple = async (email, password) => {
   return await Couple.create({ email, password });

@@ -1,12 +1,10 @@
 import Invitation from "../models/invitationModel.js";
 import Guest from "../models/guestModel.js";
+import redisClient from "../config/redisClient.js";
 
 /**
  * Create a new invitation
  *
- * @param {string} guestName
- * @param {string} guestEmail
- * @returns {Promise<Object>} Created invitation
  */
 export const createInvitationService = async (guestName, guestEmail) => {
   const newInvitation = new Invitation({ guestName, guestEmail });
@@ -16,28 +14,46 @@ export const createInvitationService = async (guestName, guestEmail) => {
 /**
  * Find an invitation by invite code
  *
- * @param {string} inviteCode
- * @returns {Promise<Object|null>} Found invitation or null
  */
 export const getInvitationByCodeService = async (inviteCode) => {
-  return await Invitation.findOne({ inviteCode: inviteCode.toUpperCase() });
+  const cacheKey = `invitation:${inviteCode.toUpperCase()}`;
+
+  const cachedInvitation = await redisClient.get(cacheKey);
+  if (cachedInvitation) {
+    return JSON.parse(cachedInvitation);
+  }
+
+  const invitation = await Invitation.findOne({ inviteCode: inviteCode.toUpperCase() });
+
+  if (invitation) {
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(invitation));
+  }
+
+  return invitation;
 };
 
 /**
  * Retrieve all invitations
  *
- * @returns {Promise<Array>} All invitations
  */
 export const getAllInvitationsService = async () => {
-  return await Invitation.find();
+  const cacheKey = "invitations:all";
+
+  const cachedInvitations = await redisClient.get(cacheKey);
+  if (cachedInvitations) {
+    return JSON.parse(cachedInvitations);
+  }
+
+  const invitations = await Invitation.find();
+
+  await redisClient.setEx(cacheKey, 3600, JSON.stringify(invitations));
+
+  return invitations;
 };
 
 /**
  * Update an invitation by invite code
  *
- * @param {string} inviteCode
- * @param {Object} updates
- * @returns {Promise<Object|null>} Updated invitation or null
  */
 export const updateInvitationService = async (inviteCode, updates) => {
   try {
@@ -50,6 +66,10 @@ export const updateInvitationService = async (inviteCode, updates) => {
     if (!updatedInvitation)
       throw new Error(`Invitation with inviteCode ${inviteCode} not found`);
 
+    const cacheKey = `invitation:${inviteCode.toUpperCase()}`;
+    await redisClient.del(cacheKey);
+    await redisClient.del("invitations:all");
+
     return updatedInvitation;
   } catch (error) {
     console.error(`Error updating invitation: ${error.message}`);
@@ -60,8 +80,6 @@ export const updateInvitationService = async (inviteCode, updates) => {
 /**
  * Delete an invitation by invite code
  *
- * @param {string} inviteCode
- * @returns {Promise<Object|null>} Deleted invitation or null
  */
 export const deleteInvitationService = async (inviteCode) => {
   try {
@@ -74,6 +92,14 @@ export const deleteInvitationService = async (inviteCode) => {
       guestIndex: deletedInvitation.guestIndex,
     });
 
+    await redisClient.del(`invitation:${inviteCode.toUpperCase()}`);
+    await redisClient.del("invitations:all");
+
+    if (deletedInvitation.guestIndex) {
+      await redisClient.del(`guest:${deletedInvitation.guestIndex}`);
+      await redisClient.del("guests:all");
+    }
+
     return {
       deletedInvitation,
       deletedGuest: deletedGuest ? true : false,
@@ -84,7 +110,10 @@ export const deleteInvitationService = async (inviteCode) => {
   }
 };
 
-// Retrieve all guest information from invitationModel and guestMode
+/**
+ * Retrieve guest information from invitationModel and guestMode
+ *
+ */
 export const getAllGuestDetailsService = async () => {
   try {
     const invitations = await Invitation.find().lean();
