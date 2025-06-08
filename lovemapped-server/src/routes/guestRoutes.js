@@ -2,6 +2,7 @@ import express from "express";
 import { loginGuest } from "../controllers/authGuestController.js";
 import { createInvitation, getInvitationByCode, getAllInvitations, updateInvitation, deleteInvitation, getAllGuestDetails } from "../controllers/inviteCodeController.js";
 
+// app.use("/api/guest", guestRoutes);
 const router = express.Router();
 
 // Guest login route

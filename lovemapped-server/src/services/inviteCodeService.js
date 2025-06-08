@@ -6,9 +6,13 @@ import redisClient from "../config/redisClient.js";
  * Create a new invitation
  *
  */
+
 export const createInvitationService = async (guestName, guestEmail) => {
   const newInvitation = new Invitation({ guestName, guestEmail });
-  return await newInvitation.save();
+  const saved = await newInvitation.save();
+
+  await redisClient.del("invitations:all");
+  return saved;
 };
 
 /**

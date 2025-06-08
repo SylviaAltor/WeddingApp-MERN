@@ -10,6 +10,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import guestRoutes from "./routes/guestRoutes.js";
 import rsvpRoutes from "./routes/rsvpRoutes.js";
+import invitationRoute from "./routes/invitationEmail.js";
 
 // Initialize Express application
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use("/api/admin", authRoutes);
 app.use("/api/guest", guestRoutes);
 app.use("/api/guest/rsvp", rsvpRoutes);
+app.use(invitationRoute);
 
 // Export the configured Express app for use in other files
 export default app;

@@ -35,7 +35,7 @@ const AdminNavbar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white fw-bold" href="/admin/welcome">
+              <a className="nav-link text-white fw-bold" href="/admin/dashboard">
                 Home Page
               </a>
             </li>
