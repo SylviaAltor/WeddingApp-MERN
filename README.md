@@ -18,10 +18,10 @@ In current project, I am developing the certain subdomain.
 
 - **Admin Authentication** via password  
 - **Guest Authentication** via invite code  
-- **Admin Dashboard** for RSVP tracking and guest management *(planned)*
-- **Map-Based Interaction** (Leaflet.js) *(planned)*
+- **Admin Dashboard** for RSVP tracking and guest management
+- **Map-Based Interaction** (Leaflet.js) *(in progress)*
 - **Shared Photo Wall** for guests and admin *(planned)*
-- **Email Invitations** with unique codes *(planned)*
+- **Email Invitations** with unique codes
 
 ---
 
@@ -38,7 +38,7 @@ In current project, I am developing the certain subdomain.
 - MongoDB Atlas
 - JWT for Auth  
 - Multer for image upload *(planned)*
-- Nodemailer for emails *(planned)*
+- Nodemailer for emails
 
 **CI/CD**  
 - Frontend: GitHub Actions *(completed)* → Vercel *(planned)*
