@@ -14,6 +14,7 @@
 
 import mongoose from "mongoose";
 import Guest from "./guestModel.js";
+import redisClient from '../config/redisClient.js';
 
 // Helper function to generate a 6-character invitation code
 function generateInviteCode(length = 6) {
@@ -63,17 +64,23 @@ InvitationSchema.pre("save", async function (next) {
   next();
 });
 
-// Post-save hook to create a corresponding guest document
 InvitationSchema.post("save", async function (doc, next) {
   try {
     const existingGuest = await Guest.findOne({ guestIndex: doc.guestIndex });
     if (!existingGuest) {
-      await Guest.create({ guestIndex: doc.guestIndex });
+      const newGuest = await Guest.create({ guestIndex: doc.guestIndex });
+
+      await redisClient.set(
+        `guest:${doc.guestIndex}`,
+        JSON.stringify(newGuest),
+        'EX',
+        3600
+      );
     }
     next();
   } catch (err) {
-    console.error("Error creating guest entry:", err);
-    next(err); // pass error forward
+    console.error("Error creating guest entry or syncing to Redis:", err);
+    next(err);
   }
 });
 

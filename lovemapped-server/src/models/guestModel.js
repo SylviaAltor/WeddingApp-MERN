@@ -24,7 +24,7 @@ const guestSchema = new mongoose.Schema({
   entréeChoice: {
     type: String,
     enum: [
-      "Not Selected", 
+      "Not Selected",
       "Roasted Rack of Lamb",
       "Filet Mignon with Wild Mushroom",
       "Eggplant Lasagna (Vegetarian)",
@@ -37,8 +37,14 @@ const guestSchema = new mongoose.Schema({
     trim: true,
   },
   geoCoordinates: {
-    type: { lat: Number, lng: Number },
-    default: null,
+    lat: {
+      type: Number,
+      default: null,
+    },
+    lng: {
+      type: Number,
+      default: null,
+    },
   },
 });
 

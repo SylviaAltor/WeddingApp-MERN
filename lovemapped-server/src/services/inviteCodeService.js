@@ -12,6 +12,12 @@ export const createInvitationService = async (guestName, guestEmail) => {
   const saved = await newInvitation.save();
 
   await redisClient.del("invitations:all");
+
+  if (saved.guestIndex) {
+    await redisClient.del(`guest:${saved.guestIndex}`);
+    await redisClient.del("guests:all");
+  }
+
   return saved;
 };
 
@@ -27,7 +33,9 @@ export const getInvitationByCodeService = async (inviteCode) => {
     return JSON.parse(cachedInvitation);
   }
 
-  const invitation = await Invitation.findOne({ inviteCode: inviteCode.toUpperCase() });
+  const invitation = await Invitation.findOne({
+    inviteCode: inviteCode.toUpperCase(),
+  });
 
   if (invitation) {
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(invitation));
@@ -123,8 +131,9 @@ export const getAllGuestDetailsService = async () => {
     const invitations = await Invitation.find().lean();
     const guests = await Guest.find().lean();
 
-    const combined = invitations.map(invite => {
-      const guestInfo = guests.find(g => g.guestIndex === invite.guestIndex) || {};
+    const combined = invitations.map((invite) => {
+      const guestInfo =
+        guests.find((g) => g.guestIndex === invite.guestIndex) || {};
       return {
         ...invite,
         ...guestInfo,
