@@ -2,7 +2,7 @@
 ![In Progress](https://img.shields.io/badge/status-In_Progress-yellow?style=flat-square)
 
 _Interactive Wedding Website for Couples and Guests_  
-**Status**: 🚧 In Progress — Currently implementing Epic 3 
+**Status**: 🚧 In Progress — Currently implementing Epic 4 
 
 ## 🧠 Overview
 
@@ -56,8 +56,11 @@ In current project, I am developing the certain subdomain.
   - Frontend: GuestWelcomePage post-login, styled with Bootstrap
   - Forms & Data Handling: RSVP form built with React Hook Form, supporting CR**U**D operations
   - Backend: RESTful API connecting frontend with MongoDB database
-- 🔄 **Epic 3**: Admin Dashboard & Guest Management (in progress)
-- 🔜 Epic 4: Guest Location & Interactive Map Integration
+- ✅ **Epic 3**: Admin Dashboard & Guest Management (completed)
+  - Frontend: Modularized components including AdminManagePage, AddGuestForm, GuestForm, and email invitation integration
+  - Backend: RESTful APIs for guest creation, full guest info retrieval, and RSVP management; Redis caching integrated to optimize invite and RSVP data
+  - Features: Nodemailer email invitation system with Gmail setup for automated, customized invites; real-time RSVP status and dietary preference tracking
+- 🔄 **Epic 4**: Guest Location & Interactive Map Integration (in progress)
 - 🔜 Epic 5: Photo Wall 
 
 Currently, development is focused on a specific couple's subdomain (e.g., /Sylvia&Voke).
